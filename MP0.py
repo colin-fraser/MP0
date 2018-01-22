@@ -2,6 +2,7 @@ import random
 import os
 import string
 import sys
+import re
 
 stopWordsList = ["i", "me", "my", "myself", "we", "our", "ours", "ourselves", "you", "your", "yours",
             "yourself", "yourselves", "he", "him", "his", "himself", "she", "her", "hers", "herself", "it", "its",
@@ -14,7 +15,11 @@ stopWordsList = ["i", "me", "my", "myself", "we", "our", "ours", "ourselves", "y
             "few", "more", "most", "other", "some", "such", "no", "nor", "not", "only", "own", "same", "so", "than",
             "too", "very", "s", "t", "can", "will", "just", "don", "should", "now"]
 
-delimiters = " \t,;.?!-:@[](){}_*/"
+delimiters = " |\t|,|;|\.|\?|\!|-|:|@|\[|\]|\(|\)|\{|\}|_|\*|\/|\n"
+
+def listify(s, delimiters=delimiters):
+    l = re.split(delimiters, s)
+    return [item for item in l if item]
 
 def getIndexes(seed):
     random.seed(seed)
@@ -27,8 +32,9 @@ def getIndexes(seed):
 
 def process(userID):
     indexes = getIndexes(userID)
+    print(sys.stdin)
     ret = []
-    # TODO
+
                     
     for word in ret:
         print word
