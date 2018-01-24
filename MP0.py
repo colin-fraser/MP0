@@ -77,8 +77,8 @@ def compare(a, b):
 def handle_tokens(tokens):
     tokens = [t for t in tokens if t not in stopWordsList]
     counts = Counter(tokens)
-    mc = counts.most_common(20)
-    mc.sort(compare)
+    mc = counts.most_common()
+    mc.sort(compare)[:20]
     ret = [k[0] for k in mc]
     return ret
 
