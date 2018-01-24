@@ -78,8 +78,8 @@ def handle_tokens(tokens):
     tokens = [t for t in tokens if t not in stopWordsList]
     counts = Counter(tokens)
     mc = counts.most_common()
-    mc.sort(compare)[:20]
-    ret = [k[0] for k in mc]
+    mc.sort(compare)
+    ret = [k[0] for k in mc[:20]]
     return ret
 
 
