@@ -3,6 +3,7 @@ import os
 import string
 import sys
 import re
+from collections import Counter
 
 stopWordsList = ["i", "me", "my", "myself", "we", "our", "ours", "ourselves", "you", "your", "yours",
             "yourself", "yourselves", "he", "him", "his", "himself", "she", "her", "hers", "herself", "it", "its",
@@ -17,9 +18,32 @@ stopWordsList = ["i", "me", "my", "myself", "we", "our", "ours", "ourselves", "y
 
 delimiters = " |\t|,|;|\.|\?|\!|-|:|@|\[|\]|\(|\)|\{|\}|_|\*|\/|\n"
 
-def listify(s, delimiters=delimiters):
-    l = re.split(delimiters, s)
-    return [item for item in l if item]
+test_in = """Billy_Reeves
+Smorz
+Nationalist_Left_-_Youth
+Ancient_Greek_units_of_measurement
+Jiuting_(Shanghai_Metro)
+Blodgett,_MO
+Baekjeong
+Matt_Brinkman
+National_Vietnam_Veterans_Art_Museum
+Optique_et_Precision_de_Levallois
+Tempo_(chess)
+Nitrosyl_tetrafluoroborate
+Bay_of_Whales
+Barton_Myers
+Sam_Pitroda
+Text_normalization
+Densetsu_no_Stafy"""
+
+def listify(s, indexes, delimiters=delimiters):
+    lines = s.split('\n')
+    titles = [lines[i] for i in indexes]
+    l = [re.split(delimiters, k) for k in titles]
+    out = []
+    for item in l:
+        out += item
+    return [item.lower() for item in out if item]
 
 def getIndexes(seed):
     random.seed(seed)
@@ -32,11 +56,31 @@ def getIndexes(seed):
 
 def process(userID):
     indexes = getIndexes(userID)
-    print(sys.stdin)
-    ret = []
-
-                    
+    raw_in = sys.stdin.read()
+    processed_in = listify(raw_in, indexes)
+    ret = handle_tokens(processed_in)
     for word in ret:
         print word
+
+def compare(a, b):
+    if a[1] > b[1]:
+        return -1
+    elif a[1] < b[1]:
+        return 1
+    else:
+        if a[0] < b[0]:
+            return -1
+        elif a[0] == b[0]:
+            return 0
+        return 1
+
+def handle_tokens(tokens):
+    tokens = [t for t in tokens if t not in stopWordsList]
+    counts = Counter(tokens)
+    mc = counts.most_common(20)
+    mc.sort(compare)
+    ret = [k[0] for k in mc]
+    return ret
+
 
 process(sys.argv[1])
